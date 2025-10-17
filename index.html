@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Captcha Solver Web App</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen font-sans">
+<div class="w-full max-w-xl p-6 bg-white rounded shadow-md">
+  <h1 class="text-2xl font-bold mb-4 text-center text-gray-800">Captcha Solver</h1>
+  <form id="captchaForm" class="space-y-4">
+    <div>
+      <label for="imageUrl" class="block mb-1 text-gray-700 font-medium">Image URL</label>
+      <input type="text" id="imageUrl" name="imageUrl" placeholder="Default image" value="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+    </div>
+    <div>
+      <label for="captchaText" class="block mb-1 text-gray-700 font-medium">Recognized Text</label>
+      <textarea id="captchaText" name="captchaText" rows="4" readonly class="w-full p-2 border border-gray-300 rounded bg-gray-50"></textarea>
+    </div>
+    <div class="flex space-x-2">
+      <button type="submit" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Solve</button>
+      <button type="button" id="resetBtn" class="flex-1 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">Reset</button>
+    </div>
+  </form>
+</div>
+<script>
+// Sample image for default
+const defaultImageUrl = document.getElementById('imageUrl').value;
+
+// Function to simulate captcha recognition
+async function recognizeCaptcha(imageUrl) {
+  // For demonstration, we'll implement a simple mock OCR
+  // In real scenario, integrate with an OCR API or library
+  try {
+    // Fetch the image to ensure it's valid
+    const response = await fetch(imageUrl);
+    if (!response.ok) {
+      alert('Failed to load image. Please check the URL.');
+      return '';
+    }
+    // Simulate OCR delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Return placeholder text based on image URL
+    // For actual OCR, integrate with a library like Tesseract.js
+    // Here, we'll just return a dummy text for demonstration
+    return 'sample_text';
+  } catch (error) {
+    alert('Error fetching image: ' + error.message);
+    return '';
+  }
+}
+
+document.getElementById('captchaForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const imageUrl = document.getElementById('imageUrl').value.trim() || defaultImageUrl;
+  // Show loading indicator in textarea
+  const textarea = document.getElementById('captchaText');
+  textarea.value = 'Recognizing...';
+  const recognizedText = await recognizeCaptcha(imageUrl);
+  textarea.value = recognizedText;
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  document.getElementById('captchaForm').reset();
+  document.getElementById('captchaText').value = '';
+});
+</script>
+</body>
+</html>
